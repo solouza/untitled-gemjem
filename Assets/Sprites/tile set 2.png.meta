@@ -97,7 +97,7 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: tile set 2_0
+      name: Tile Set 2_0
       rect:
         serializedVersion: 2
         x: 0
@@ -111,14 +111,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 8678737dca976224f8c7ed12a48354fd
-      internalID: -1909565547
+      spriteID: d3174991df95bbf4caf8c7caa43dfc48
+      internalID: 479599634
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_1
+      name: Tile Set 2_1
       rect:
         serializedVersion: 2
         x: 16
@@ -132,14 +132,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 1ec8f24959a139443b616d72c71558c8
-      internalID: 978391635
+      spriteID: de5cbfd2dfbcf414e87b6a51422c98c5
+      internalID: -2094323898
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_2
+      name: Tile Set 2_2
       rect:
         serializedVersion: 2
         x: 32
@@ -153,35 +153,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 5ed45f38d7a90ac488ccce5de341f220
-      internalID: 2147306
+      spriteID: 5194df1048dd19043aca9db6bdcd558b
+      internalID: -856130223
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_3
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 112
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: b69e4b4345060df44947ba41618571ae
-      internalID: -34711303
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_4
+      name: Tile Set 2_3
       rect:
         serializedVersion: 2
         x: 64
@@ -195,14 +174,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: eda9335c7c055cc44bbb8fe90c7bf05d
-      internalID: 1367825445
+      spriteID: e332d6ec597168c458c9064683d26c0f
+      internalID: 98454994
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_5
+      name: Tile Set 2_4
       rect:
         serializedVersion: 2
         x: 0
@@ -216,14 +195,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 60a72df322a65b047a159f9bdc89e8a1
-      internalID: -1263502254
+      spriteID: 981da11daf129184d8cabb590801b252
+      internalID: 57660790
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_6
+      name: Tile Set 2_5
       rect:
         serializedVersion: 2
         x: 16
@@ -237,14 +216,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a417d0675bfb63344b2ba066e20a2a79
-      internalID: 370799517
+      spriteID: 0213f8a345afa0e4f903770ac00e30e3
+      internalID: 492886835
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_7
+      name: Tile Set 2_6
       rect:
         serializedVersion: 2
         x: 32
@@ -258,35 +237,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 0f456e52b146ad546b10172a2c428f47
-      internalID: -1549439737
+      spriteID: 26ccb9e4a9b32cd48b9124c0e0e74b39
+      internalID: 2047940470
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_8
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 96
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 829daccc536080146804c9cb0cbc10cd
-      internalID: -293074733
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_9
+      name: Tile Set 2_7
       rect:
         serializedVersion: 2
         x: 64
@@ -300,14 +258,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 7f20f5ca333e5024f80a84535f6828ff
-      internalID: 1998784542
+      spriteID: f01a0c7b30050e44093ab95faf750699
+      internalID: 1623712106
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_10
+      name: Tile Set 2_8
       rect:
         serializedVersion: 2
         x: 0
@@ -321,14 +279,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: c00514aebec460942926047934cb6b90
-      internalID: 292347526
+      spriteID: e7bbe55ad09a31d48bfb2852baf7d56f
+      internalID: 597903936
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_11
+      name: Tile Set 2_9
       rect:
         serializedVersion: 2
         x: 16
@@ -342,14 +300,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 4516479aa990d7a4a8b3b9488023c464
-      internalID: 1530783572
+      spriteID: 1b9a57974d9ea774eadf8ec5b7bb6f9e
+      internalID: -1188719228
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_12
+      name: Tile Set 2_10
       rect:
         serializedVersion: 2
         x: 32
@@ -363,35 +321,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: cfb6ce812c2bd234990a7f5bf918f3b6
-      internalID: 699242876
+      spriteID: b152eda81d3db494fba270a7704d2e07
+      internalID: 960342514
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_13
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 80
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 627685f8a768fd740947f734c689f363
-      internalID: 2063359848
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_14
+      name: Tile Set 2_11
       rect:
         serializedVersion: 2
         x: 64
@@ -405,119 +342,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3222f369d462f8a45ada275fad5c580d
-      internalID: 466991521
+      spriteID: 0581638ef3d11f54da19ce2384307096
+      internalID: -709896258
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_15
-      rect:
-        serializedVersion: 2
-        x: 0
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 08fc95a39e24fe34d9ebc40d0217397e
-      internalID: 555238280
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_16
-      rect:
-        serializedVersion: 2
-        x: 16
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 83755c0b329ce1d4dbd8124fcb8d9374
-      internalID: -2102726362
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_17
-      rect:
-        serializedVersion: 2
-        x: 32
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 742c6047ad1680b4689cdfbf41f70fbc
-      internalID: 662786267
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_18
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 65f4dfd25a9c94b4e98229793dde83ab
-      internalID: -906541442
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_19
-      rect:
-        serializedVersion: 2
-        x: 64
-        y: 64
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 0ef54a3131e1a254fa69850daf7f7df9
-      internalID: -515976350
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_20
+      name: Tile Set 2_12
       rect:
         serializedVersion: 2
         x: 0
@@ -531,14 +363,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d22047c6e481fcb4da75f508342e79e9
-      internalID: 1949277757
+      spriteID: 87ba65f4b7891db448d6683db542bb1f
+      internalID: 1403660284
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_21
+      name: Tile Set 2_13
       rect:
         serializedVersion: 2
         x: 16
@@ -552,14 +384,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a91e1a6d9def94e48beaeee6a81a7059
-      internalID: 214689345
+      spriteID: c70c43294d4c8a94dbea92a8e0045b4e
+      internalID: -381188913
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_22
+      name: Tile Set 2_14
       rect:
         serializedVersion: 2
         x: 32
@@ -573,35 +405,14 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: a23f017996e2f5349b3a943bfc0d46c8
-      internalID: 1325763249
+      spriteID: 0ac2faa4c6f56514ba25c366079f9515
+      internalID: -870477829
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_23
-      rect:
-        serializedVersion: 2
-        x: 48
-        y: 48
-        width: 16
-        height: 16
-      alignment: 0
-      pivot: {x: 0, y: 0}
-      border: {x: 0, y: 0, z: 0, w: 0}
-      outline: []
-      physicsShape: []
-      tessellationDetail: 0
-      bones: []
-      spriteID: 07539308d75e59c49992b02799ad73ed
-      internalID: 584541225
-      vertices: []
-      indices: 
-      edges: []
-      weights: []
-    - serializedVersion: 2
-      name: tile set 2_24
+      name: Tile Set 2_15
       rect:
         serializedVersion: 2
         x: 64
@@ -615,17 +426,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d4b29d915194961498f48ea5d6a225af
-      internalID: -572864532
+      spriteID: 17799811f14549d4d98ea68ddecab8b3
+      internalID: -1851950442
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_25
+      name: Tile Set 2_16
       rect:
         serializedVersion: 2
-        x: 0
+        x: 80
         y: 32
         width: 16
         height: 16
@@ -636,17 +447,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3d536b80c6f3c4a448d58d65ffd4dcee
-      internalID: -819811168
+      spriteID: 3809beaf5059a1540a24c7ed685dff22
+      internalID: 1319429588
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_26
+      name: Tile Set 2_17
       rect:
         serializedVersion: 2
-        x: 16
+        x: 96
         y: 32
         width: 16
         height: 16
@@ -657,17 +468,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 3f6a720df7a895c4ab93cad7cdc40c7a
-      internalID: -1133543850
+      spriteID: 58119cd34431a5e4ba98d0a8f14f6b38
+      internalID: 1642198653
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_27
+      name: Tile Set 2_18
       rect:
         serializedVersion: 2
-        x: 32
+        x: 112
         y: 32
         width: 16
         height: 16
@@ -678,17 +489,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: d17f425caa1c56c468d876c21f1b9b03
-      internalID: 854004492
+      spriteID: c12948e64a93e8b42907b2756358f511
+      internalID: 1447903044
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_28
+      name: Tile Set 2_19
       rect:
         serializedVersion: 2
-        x: 0
+        x: 80
         y: 16
         width: 16
         height: 16
@@ -699,17 +510,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 652ab79c0251af54b836aa86583e4a0c
-      internalID: -1826595316
+      spriteID: 89baff594c46dcd4495a068ad373e8e6
+      internalID: 1344160453
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_29
+      name: Tile Set 2_20
       rect:
         serializedVersion: 2
-        x: 32
+        x: 112
         y: 16
         width: 16
         height: 16
@@ -720,17 +531,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: bfdc610227ad08242b6eedeafe2fa6f7
-      internalID: 655613552
+      spriteID: 8ba8e2f718629004b906305bc78084b1
+      internalID: -1175947270
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_30
+      name: Tile Set 2_21
       rect:
         serializedVersion: 2
-        x: 0
+        x: 80
         y: 0
         width: 16
         height: 16
@@ -741,17 +552,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f26da23851b48df48b1cb81f2892ef07
-      internalID: -838310004
+      spriteID: 640bf8375a6b9844c9a76a10e9380717
+      internalID: 2010945161
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_31
+      name: Tile Set 2_22
       rect:
         serializedVersion: 2
-        x: 16
+        x: 96
         y: 0
         width: 16
         height: 16
@@ -762,17 +573,17 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: f6826b651a9ef6d4888df59ff9248370
-      internalID: -1056608395
+      spriteID: d5ef9c22d58d2e44d9f6dc722c340cfe
+      internalID: 1064376759
       vertices: []
       indices: 
       edges: []
       weights: []
     - serializedVersion: 2
-      name: tile set 2_32
+      name: Tile Set 2_23
       rect:
         serializedVersion: 2
-        x: 32
+        x: 112
         y: 0
         width: 16
         height: 16
@@ -783,8 +594,8 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: 0
       bones: []
-      spriteID: 798dae9249faef44f9c956cb1b53eb6b
-      internalID: -1574631923
+      spriteID: cf2945cbc8514354db6e3436015e8329
+      internalID: -2031720631
       vertices: []
       indices: 
       edges: []
@@ -800,39 +611,30 @@ TextureImporter:
     weights: []
     secondaryTextures: []
     nameFileIdTable:
-      tile set 2_0: -1909565547
-      tile set 2_1: 978391635
-      tile set 2_10: 292347526
-      tile set 2_11: 1530783572
-      tile set 2_12: 699242876
-      tile set 2_13: 2063359848
-      tile set 2_14: 466991521
-      tile set 2_15: 555238280
-      tile set 2_16: -2102726362
-      tile set 2_17: 662786267
-      tile set 2_18: -906541442
-      tile set 2_19: -515976350
-      tile set 2_2: 2147306
-      tile set 2_20: 1949277757
-      tile set 2_21: 214689345
-      tile set 2_22: 1325763249
-      tile set 2_23: 584541225
-      tile set 2_24: -572864532
-      tile set 2_25: -819811168
-      tile set 2_26: -1133543850
-      tile set 2_27: 854004492
-      tile set 2_28: -1826595316
-      tile set 2_29: 655613552
-      tile set 2_3: -34711303
-      tile set 2_30: -838310004
-      tile set 2_31: -1056608395
-      tile set 2_32: -1574631923
-      tile set 2_4: 1367825445
-      tile set 2_5: -1263502254
-      tile set 2_6: 370799517
-      tile set 2_7: -1549439737
-      tile set 2_8: -293074733
-      tile set 2_9: 1998784542
+      Tile Set 2_0: 479599634
+      Tile Set 2_1: -2094323898
+      Tile Set 2_10: 960342514
+      Tile Set 2_11: -709896258
+      Tile Set 2_12: 1403660284
+      Tile Set 2_13: -381188913
+      Tile Set 2_14: -870477829
+      Tile Set 2_15: -1851950442
+      Tile Set 2_16: 1319429588
+      Tile Set 2_17: 1642198653
+      Tile Set 2_18: 1447903044
+      Tile Set 2_19: 1344160453
+      Tile Set 2_2: -856130223
+      Tile Set 2_20: -1175947270
+      Tile Set 2_21: 2010945161
+      Tile Set 2_22: 1064376759
+      Tile Set 2_23: -2031720631
+      Tile Set 2_3: 98454994
+      Tile Set 2_4: 57660790
+      Tile Set 2_5: 492886835
+      Tile Set 2_6: 2047940470
+      Tile Set 2_7: 1623712106
+      Tile Set 2_8: 597903936
+      Tile Set 2_9: -1188719228
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
