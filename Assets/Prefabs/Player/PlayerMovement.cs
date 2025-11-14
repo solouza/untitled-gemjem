@@ -21,7 +21,7 @@ public class PlayerMovement : MonoBehaviour
     public float fallMultiplier = 3f;
     public float lowJumpMultiplier = 2f;
 
-    private bool wasGrounded;
+    public bool wasGrounded;
 
     void Update()
     {
