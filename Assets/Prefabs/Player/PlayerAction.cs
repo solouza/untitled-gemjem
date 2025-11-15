@@ -4,34 +4,46 @@ using UnityEngine;
 
 public class PlayerAction : MonoBehaviour
 {
-    private GameObject attackArea = default;
-    private bool attacking = false;
+    private GameObject enemyHitbox;   // Ditemukan di indeks 0
+    private GameObject breakerHitbox; // Ditemukan di indeks 1 (sesuai urutan di Hierarchy)
+    public bool attacking = false;
     // Hapus: private float timeToAttack = 0.22f;
     // Hapus: private float timer = 0f;
     private PlayerMovement movement;
     private Animator animator;
     public float attackWindupTime = 0.5f; // Durasi JEDA sebelum HITBOX aktif
 
-    void Start() {
-    // Cek apakah ada anak di Player
-    if (transform.childCount > 0)
+void Start() 
+{
+    // Cek keamanan: Jika setup belum lengkap, berikan error dan keluar.
+    if (transform.childCount < 2) 
     {
-        attackArea = transform.GetChild(0).gameObject;
+        Debug.LogError("SETUP GAGAL! Player harus memiliki setidaknya DUA child objects (Hitbox_Enemy & Hitbox_Breaker)!");
+        // return; // Opsional: Hapus return jika kamu ingin sisa fungsi Start tetap berjalan
+
+        // Karena kita tidak bisa keluar, kita set null agar tidak crash
+        enemyHitbox = null; 
+        breakerHitbox = null;
     }
     else
     {
-        Debug.LogError("Player tidak memiliki AttackArea sebagai child!");
+        // 1. Inisialisasi Hitbox
+        enemyHitbox = transform.GetChild(0).gameObject; 
+        breakerHitbox = transform.GetChild(1).gameObject;
     }
     
+    // 2. Inisialisasi Komponen Dasar
     animator = GetComponent<Animator>();
-    if (animator == null)
-    {
-        Debug.LogError("Komponen Animator tidak ditemukan di Player!");
-    }
-
-        movement = GetComponent<PlayerMovement>();
+    movement = GetComponent<PlayerMovement>();
     
-    attackArea.SetActive(false);
+    // 3. Deaktivasi Hitbox (Dilakukan di luar IF dengan pengecekan null)
+    if (enemyHitbox != null) 
+    {
+        enemyHitbox.SetActive(false);
+        breakerHitbox.SetActive(false);
+    }
+    
+    // HAPUS ATAU KOMENTARI BARIS INI: attackArea.SetActive(false);
 }
 
     void Update()
@@ -39,7 +51,6 @@ public class PlayerAction : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F) && !attacking)
         {
             Attack();
-            Debug.Log("Attacking");
         }
 
         // HAPUS SEMUA LOGIKA TIMER YANG ADA DI SINI
@@ -61,53 +72,53 @@ private void Attack()
 {
     attacking = true;
     
-    // 1. Mulai animasi visual (windup) secara instan
+    // 1. [PERBAIKAN KRUSIAL] Reset status isJumping di Animator
+    if (animator != null)
+    {
+        animator.SetBool("isJumping", false); // Paksa lompatan mati!
+    }
+    
+    // 2. Mulai animasi visual (windup)
     animator.SetTrigger("isAttacking"); 
 
-    // 2. Bekukan pergerakan player
+    // 3. Bekukan pergerakan player
     if (movement != null)
         movement.canMove = false;
 
-    // 3. Mulai Coroutine untuk mengelola timing dan aktivasi hitbox
+    // 4. Mulai Coroutine
     StartCoroutine(WaitForAttackToFinish());
 }
 
 private IEnumerator WaitForAttackToFinish()
 {
-    // [LANGKAH 1: DELAY/WINDUP] 
-    // Jeda di sini. Hitbox masih mati selama waktu windup ini.
+    // [1. DELAY/WINDUP] 
     yield return new WaitForSeconds(attackWindupTime);
 
-    // --- HITBOX AKTIF ---
-    
-    // 2. AKTIFKAN HITBOX (Ini akan terjadi SETELAH jeda 0.xx detik)
-    if (attackArea != null)
-        attackArea.SetActive(true);
+    // --- AKTIFKAN HITBOX BARU ---
+    // Aktifkan kedua Hitbox secara bersamaan
+    if (enemyHitbox != null)
+        enemyHitbox.SetActive(true);
+    if (breakerHitbox != null)
+        breakerHitbox.SetActive(true);
 
-    // 3. TENTUKAN WAKTU COOLDOWN (Sisa Waktu Hitbox Aktif)
-    
-    // Ambil total panjang animasi
-    AnimatorStateInfo stateInfo = animator.GetCurrentAnimatorStateInfo(0);
-    float animationLength = stateInfo.length;
-    
-    // Hitung sisa waktu tunggu (Total Animasi - Waktu Windup)
-    float hitDuration = animationLength - attackWindupTime;
-    
-    // Pastikan durasi tidak negatif (minimal 0.01s)
-    if (hitDuration < 0) hitDuration = 0.01f; 
-
-    // Tunggu sisa durasi serangan
-    yield return new WaitForSeconds(hitDuration); 
+    // 2. TUNGGU DURASI HITBOX
+    // Kita gunakan 2 siklus fisika untuk keandalan tinggi (sesuai solusi terakhir)
+    yield return new WaitForFixedUpdate(); 
+    yield return new WaitForFixedUpdate(); 
 
     // --- RESET ---
     
-    // 4. DEAKTIFKAN HITBOX
-    if (attackArea != null)
-        attackArea.SetActive(false);
+    // 3. [PERBAIKAN] DEAKTIVASI KEDUA HITBOX
+    if (enemyHitbox != null)
+        enemyHitbox.SetActive(false);
+    if (breakerHitbox != null)
+        breakerHitbox.SetActive(false);
+    
+    // 4. Tambahkan jeda 1 frame sebelum mengembalikan kontrol:
+    yield return null; 
     
     // 5. Kembalikan kontrol
     attacking = false;
-
     if (movement != null)
         movement.canMove = true;
 }

@@ -1,0 +1,75 @@
+using UnityEngine;
+
+public class SpiderPatrol : MonoBehaviour
+{
+    [Header("Movement Settings")]
+    public float moveSpeed = 2f;
+    public float patrolRange = 0.5f; 
+
+    [Header("Patrol Points")]
+    public Transform pointA; 
+    public Transform pointB; 
+
+    private Rigidbody2D rb;
+    private Animator anim;
+    private SpriteRenderer spriteRenderer;
+    private bool movingRight = true; 
+
+    void Awake()
+    {
+        rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        spriteRenderer = GetComponent<SpriteRenderer>();
+        // Tentukan arah pandang awal
+        FlipVisual(movingRight);
+    }
+
+    void FixedUpdate()
+    {
+        Patrol();
+    }
+
+    void Patrol()
+    {
+        if (pointA == null || pointB == null) return;
+
+        Vector2 targetPosition;
+
+        // 1. Tentukan target
+        if (movingRight)
+        {
+            targetPosition = pointB.position;
+        }
+        else
+        {
+            targetPosition = pointA.position;
+        }
+
+        // 2. Cek jarak ke target untuk berbalik
+        if (Vector2.Distance(transform.position, targetPosition) < patrolRange)
+        {
+            movingRight = !movingRight;
+            FlipVisual(movingRight);
+        }
+
+        // 3. Terapkan gerakan horizontal (Y-velocity diurus gravitasi)
+        float direction = movingRight ? 1f : -1f;
+        rb.velocity = new Vector2(direction * moveSpeed, rb.velocity.y);
+
+        // 4. Mainkan animasi
+        if (anim != null)
+        {
+             // Ganti dengan nama state animasi jalan/patroli laba-laba
+             anim.Play("PatrolWalk"); 
+        }
+    }
+
+    void FlipVisual(bool isMovingRight)
+    {
+        if (spriteRenderer != null)
+        {
+            // Logika flip konsisten dengan Worm dan Player
+            spriteRenderer.flipX = isMovingRight; 
+        }
+    }
+}

@@ -27,7 +27,7 @@ public class PlayerMovement : MonoBehaviour
     {
         if (!canMove)
         {
-            animator.SetFloat("speed", 0);
+            //animator.SetFloat("speed", 0);
             return;
         }
         horizontal = Input.GetAxisRaw("Horizontal");
@@ -60,20 +60,32 @@ public class PlayerMovement : MonoBehaviour
     }
 
     private void FixedUpdate()
+{
+    // A. LOGIKA UTAMA: Gerakan Normal
+    if (canMove) 
     {
-        if (!canMove) 
-        {
-            rb.velocity = new Vector2(0, rb.velocity.y);
-            return;
-        }
-
+        // Terapkan kecepatan horizontal normal (Input aktif)
         rb.velocity = new Vector2(horizontal * speed, rb.velocity.y);
-
-        if (rb.velocity.y < 0)
-        {
-            rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
-        }
     }
+    // B. LOGIKA STUCK/FREEZE KETIKA ATTACK DI DARAT
+    else if (!canMove && IsGrounded()) 
+    {
+        // Jika kontrol terkunci DAN Player di tanah: Hentikan pergerakan X
+        rb.velocity = new Vector2(0, rb.velocity.y); 
+    }
+    // C. JIKA !canMove DAN DI UDARA: 
+    // Kita lewati kedua blok di atas, yang secara otomatis mempertahankan nilai
+    // rb.velocity.x saat ini (momentum melayang) dan membiarkan gravitasi bekerja.
+    
+    // D. LOGIKA GRAVITASI (Lebih Baik Lompat Rendah/Tinggi)
+    if (rb.velocity.y < 0)
+    {
+        rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.fixedDeltaTime;
+    }
+    
+    // Catatan: Jika kamu ingin lompatan tinggi/rendah yang sudah dikomentari, kamu bisa
+    // mengaktifkan kembali kodenya di sini.
+}
 
     private bool IsGrounded()
     {
