@@ -14,6 +14,9 @@ public class SpiderHealth : MonoBehaviour
     public float deathFallSpeed = 3f;
     public float flashDuration = 0.1f;
     public float timeToFade = 1.5f;
+    [Header("Scoring")]
+    public int scoreValue = 100; // [BARU] Nilai skor yang diberikan saat musuh mati
+    public GameObject floatingTextPrefab;
 
     // Komponen Internal
     private Rigidbody2D rb;
@@ -120,6 +123,31 @@ public class SpiderHealth : MonoBehaviour
 
     void Die()
     {
+        if (floatingTextPrefab != null)
+    {
+        // Instansiasi (spawn) text di posisi musuh yang mati
+        GameObject textInstance = Instantiate(
+            floatingTextPrefab, 
+            transform.position, 
+            Quaternion.identity);
+
+        
+
+        // Ambil scriptnya dan set nilai teks
+        FloatingScoreText fs = textInstance.GetComponent<FloatingScoreText>();
+        if (fs != null)
+        {
+            fs.SetText(scoreValue);
+        }
+    }
+   
+        PlayerHealth playerHealth = GameObject.FindObjectOfType<PlayerHealth>();
+
+    if (playerHealth != null)
+    {
+        playerHealth.PlayEnemyDeathSFX();
+        playerHealth.AddScore(scoreValue);
+    }
         // 1. Bekukan Animasi
         if (anim != null)
         {

@@ -11,7 +11,9 @@ public class WormHealth : MonoBehaviour
     public float deathFallSpeed = 3f; // Kekuatan gravitasi saat jatuh
     public float flashDuration = 0.1f; // Durasi efek flash
     public float timeToFade = 1.5f; // Durasi menghilang
-
+    [Header("Scoring")]
+    public int scoreValue = 100; // [BARU] Nilai skor yang diberikan saat musuh mati
+    public GameObject floatingTextPrefab;
     // Komponen Internal
     private Rigidbody2D rb;
     private SpriteRenderer sr;
@@ -75,6 +77,30 @@ void OnCollisionEnter2D(Collision2D collision)
     
     void Die()
     {
+        if (floatingTextPrefab != null)
+    {
+        // Instansiasi (spawn) text di posisi musuh yang mati
+        GameObject textInstance = Instantiate(
+            floatingTextPrefab, 
+            transform.position, 
+            Quaternion.identity);
+        
+        // Ambil scriptnya dan set nilai teks
+        FloatingScoreText fs = textInstance.GetComponent<FloatingScoreText>();
+        if (fs != null)
+        {
+            fs.SetText(scoreValue);
+        }
+    
+    }
+  
+        PlayerHealth playerHealth = GameObject.FindObjectOfType<PlayerHealth>();
+
+    if (playerHealth != null)
+    {
+         playerHealth.PlayEnemyDeathSFX();
+        playerHealth.AddScore(scoreValue);
+    }
         if (anim != null)
     {
         anim.enabled = false; 

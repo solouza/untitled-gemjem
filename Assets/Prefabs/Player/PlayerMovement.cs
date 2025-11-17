@@ -6,11 +6,12 @@ using UnityEngine;
 public class PlayerMovement : MonoBehaviour
 {
     public Animator animator;
-
+    private float mobileInputX = 0f; // Variabel untuk menyimpan input sentuhan
     private float horizontal;
     public float speed = 4f;
     public float jumpingPower = 16f;
     private bool isFacingRight = true;
+    private PlayerHealth playerHealth;
     public bool canMove = true;
 
     [SerializeField] private Rigidbody2D rb;
@@ -23,41 +24,53 @@ public class PlayerMovement : MonoBehaviour
 
     public bool wasGrounded;
 
+    void Awake()
+{
+    // ... (inisialisasi komponen lain) ...
+    playerHealth = GetComponent<PlayerHealth>(); // [BARU] Ambil referensi PlayerHealth
+}
     void Update()
+{
+    if (!canMove)
     {
-        if (!canMove)
-        {
-            //animator.SetFloat("speed", 0);
-            return;
-        }
-        horizontal = Input.GetAxisRaw("Horizontal");
-
-        if (Input.GetButtonDown("Jump") && IsGrounded())
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
-            animator.SetBool("isJumping", true);
-        }
-
-        //if (rb.velocity.y < 0)
-        //rb.velocity += Vector2.up * Physics2D.gravity.y * (fallMultiplier - 1) * Time.deltaTime;
-
-        animator.SetFloat("speed", Mathf.Abs(horizontal));
-        bool grounded = IsGrounded();
-
-        if (grounded && !wasGrounded)
-        {
-            animator.SetBool("isJumping", false);
-        }
-
-        wasGrounded = grounded;
-
-       // if (Input.GetButtonUp("Jump") && rb.velocity.y > 0f)
-        //{
-            //rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-        //}
-
-        Flip();
+        return;
     }
+    
+    horizontal = mobileInputX; 
+    if (horizontal == 0f) // Jika tidak ada sentuhan UI, baru cek keyboard/gamepad
+    {
+        horizontal = Input.GetAxisRaw("Horizontal");
+    }
+
+    // [KOREKSI LOGIKA LOMPAT]
+    if (Input.GetButtonDown("Jump") && IsGrounded())
+    {
+        rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+        animator.SetBool("isJumping", true);
+        
+        // [FIX SPAMMING] Panggil suara hanya di sini
+        if (playerHealth != null)
+        {
+            playerHealth.PlayJumpSFX(); 
+        }
+    }
+
+    // --- (Hapus semua kode PlayJumpSFX yang ada di luar blok ini) ---
+    
+    animator.SetFloat("speed", Mathf.Abs(horizontal));
+    bool grounded = IsGrounded();
+
+    if (grounded && !wasGrounded)
+    {
+        animator.SetBool("isJumping", false);
+    }
+
+    wasGrounded = grounded;
+
+    // Tambahkan kembali logika lowJumpMultiplier jika diperlukan
+
+    Flip();
+}
 
     private void FixedUpdate()
 {
@@ -102,4 +115,29 @@ public class PlayerMovement : MonoBehaviour
             transform.localScale = localScale;
         }
     }
+    public void SetMobileInput(float direction)
+{
+    mobileInputX = direction; // direction akan diisi 1 (kanan) atau -1 (kiri)
+}
+
+public void StopMobileInput()
+{
+    mobileInputX = 0f;
+}
+public void MobileJump()
+{
+    // Cek apakah Player berada di tanah sebelum melompat
+    if (IsGrounded())
+    {
+        // Terapkan gaya lompat
+        rb.velocity = new Vector2(rb.velocity.x, jumpingPower);
+        animator.SetBool("isJumping", true);
+        
+        // Putar Suara Lompat
+        if (playerHealth != null)
+        {
+            playerHealth.PlayJumpSFX(); 
+        }
+    }
+}
 }

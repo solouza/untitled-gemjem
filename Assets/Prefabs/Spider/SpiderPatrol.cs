@@ -5,7 +5,8 @@ public class SpiderPatrol : MonoBehaviour
     [Header("Movement Settings")]
     public float moveSpeed = 2f;
     public float patrolRange = 0.5f; 
-
+    [Header("Initialization")]
+public bool startMovingRight = true;
     [Header("Patrol Points")]
     public Transform pointA; 
     public Transform pointB; 
@@ -13,13 +14,19 @@ public class SpiderPatrol : MonoBehaviour
     private Rigidbody2D rb;
     private Animator anim;
     private SpriteRenderer spriteRenderer;
-    private bool movingRight = true; 
+    private bool movingRight;
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (rb != null)
+        movingRight = startMovingRight;
+    {
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0f; // Penting untuk mencegah putaran
+    }
         // Tentukan arah pandang awal
         FlipVisual(movingRight);
     }

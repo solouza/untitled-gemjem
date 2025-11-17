@@ -5,86 +5,235 @@ using UnityEngine.SceneManagement;
 
 public class PlayerHealth : MonoBehaviour
 {
+    // --- PERSISTENCE & LIVES ---
     [Header("Life System")]
-    //public int maxLives = 3;
-    //public int currentLives;
     public int maxLives = 3;
-    private int currentLives;
+    private int currentLives; // Nilai disinkronkan dengan GameData
+    [Header("Time Score")]
+    public float scoreInterval = 0.2f; // Tambah skor setiap 1 detik
+    public int scorePerInterval = 1;  // Nilai skor yang ditambahkan (misalnya 5)
+    [Header("SFX")]
+    public AudioClip coinCollectSFX; // Slot untuk file suara koin
+    private AudioSource sfxSource;
+    private float timeSinceLastScore = 0f; // Waktu pelacak
+    public AudioClip jumpSFX;        
+    public AudioClip attackSFX;    
+    public AudioClip playerDeathSFX;  
+    public AudioClip enemyDeathSFX;   
+    [Header("UI Control")]
+    public GameObject mobileControlsContainer; // [BARU] Wadah semua tombol D-Pad/Attack 
+
+    
     [Header("Invincibility")]
     public float invincibilityDuration = 1.5f;
     public float flashRate = 0.1f;
-    public float deathAnimationTime = 1.5f; // Durasi total jatuh
+
+    [Header("Death Effects")]
+    public float deathAnimationTime = 1.5f; // Durasi jatuh
     public float deathBounceForce = 8f;
     
+    // --- UI & RESPAWN ---
     [Header("UI Reference")]
     public TextMeshProUGUI livesText;
+    public TextMeshProUGUI scoreText; 
+    
+    [Header("Death Cutscene")]
+    public GameObject retryPanel; // Panel cutscene (diaktifkan saat respawn/game over)
+    public TextMeshProUGUI cutsceneLivesText; // Teks nyawa di cutscene
     
     [Header("Respawn")]
-    public Vector3 respawnPoint; 
+    public Vector3 respawnPoint; // Tetap ada untuk checkpoint system
 
+    // --- INTERNAL STATE ---
     private bool isInvincible = false;
     private SpriteRenderer sr; 
+    private bool isDead = false; // Flag untuk mencegah double death
 
     void Awake()
     {
+        if (GameData.Instance != null) 
+    {
+        currentLives = GameData.Instance.currentLives;
+    }
+    else
+    {
+        // Jika GameData TIDAK ditemukan (saat testing di Editor), set nilai default
+        currentLives = maxLives; 
+    }
         currentLives = GameData.Instance.currentLives;
         respawnPoint = transform.position;
         sr = GetComponent<SpriteRenderer>();
+        
+        sfxSource = GetComponent<AudioSource>();
+    if (sfxSource == null)
+    {
+        sfxSource = gameObject.AddComponent<AudioSource>();
+    }
+    sfxSource.playOnAwake = false;
+        if(retryPanel != null) retryPanel.SetActive(false);
+    }
+
+    void Start()
+    {
         UpdateLivesUI();
+        UpdateScoreUI();
+        isDead = false;
     }
-
-    public void TakeDamage()
+    void Update()
 {
-    if (isInvincible) return; // Cek status kebal
-    if (GameData.Instance.currentLives <= 0) return; // Cek status di data persisten
-
-    // 1. KURANGI NYAWA di objek PERSISTEN
-    GameData.Instance.currentLives--; 
-
-    // 2. Sinkronkan nilai lokal untuk UI & Logika Game Over
-    currentLives = GameData.Instance.currentLives;
-    UpdateLivesUI(); 
-
-    // 3. Cek apakah ini Game Over Final
-    if (currentLives <= 0)
+    // Cek apakah Player sedang hidup dan tidak dalam proses kematian
+    if (!isDead)
     {
-        // Game Over Total: Reset nyawa di GameData untuk game berikutnya
-        GameData.Instance.ResetLives(); 
+        // 1. Tambahkan waktu yang berlalu
+        timeSinceLastScore += Time.deltaTime; 
+
+        // 2. Cek apakah interval sudah tercapai
+        if (timeSinceLastScore >= scoreInterval)
+        {
+            // Reset pelacak waktu
+            timeSinceLastScore = 0f; 
+
+            // Tambahkan skor
+            AddScore(scorePerInterval);
+        }
+    }
+}
+public void PlayPlayerDeathSFX()
+{
+    if (sfxSource != null && playerDeathSFX != null)
+    {
+        sfxSource.PlayOneShot(playerDeathSFX);
+    }
+}
+public void PlayEnemyDeathSFX()
+{
+    if (sfxSource != null && enemyDeathSFX != null)
+    {
+        sfxSource.PlayOneShot(enemyDeathSFX);
+    }
+}
+    public void PlayJumpSFX()
+{
+    if (sfxSource != null && jumpSFX != null)
+    {
+        sfxSource.PlayOneShot(jumpSFX);
+    }
+}
+public void PlayAttackSFX()
+{
+    if (sfxSource != null && attackSFX != null)
+    {
+        sfxSource.PlayOneShot(attackSFX);
+    }
+}
+    // Dipanggil musuh/lava (Semua sumber damage)
+    public void TakeDamage()
+    {
+        if (isInvincible || isDead) return; 
+        
+        // 1. KURANGI NYAWA & SINKRONISASI
+        GameData.Instance.currentLives--; 
+        currentLives = GameData.Instance.currentLives;
+        UpdateLivesUI(); 
+        
+        // 2. SELALU mulai sequence kematian yang akan mengarah ke reload
+        StartCoroutine(DeathSequenceAndReload()); 
     }
     
-    // 4. PICU SEQUENCE GAME OVER (Reload Scene)
-    // Cuma dipanggil SATU KALI
-    StartCoroutine(GameOverAndReload()); 
-}
-    
-    // --- KEMATIAN LETHAL (GAME OVER) ---
-    IEnumerator GameOverAndReload()
+    public void AddScore(int points)
     {
-        StartCoroutine(InvincibilityCoroutine());
-        // 1. Matikan visual dan kontrol
-        DisableAllControls();
+        GameData.Instance.currentScore += points;
+        Debug.Log("Skor bertambah! Total: " + GameData.Instance.currentScore);
+        UpdateScoreUI();
+    }
+    public void PlayCoinCollectSFX()
+{
+    if (sfxSource != null && coinCollectSFX != null)
+    {
+        // Putar suara secara instan dari AudioSource Player
+        sfxSource.PlayOneShot(coinCollectSFX);
+    }
+}
+    // ----------------------------------------------------------------------------------
+    // --- DEATH SEQUENCE (Gabungan Cutscene & Reload) ---
+    // ----------------------------------------------------------------------------------
 
-        // 2. Efek Mario 'Hop'
+    IEnumerator DeathSequenceAndReload()
+    {
+        isDead = true; // Kunci Player agar tidak bisa mati lagi
+        PlayPlayerDeathSFX();
+        
+        // 1. Mulai efek BLINKING (Visual Feedback)
+        StartCoroutine(InvincibilityCoroutine()); 
+        
+        // 2. Efek Hop & Jatuh
+        DisableAllControls();
+        StartCoroutine(ExecuteDeathHop());
+        if (sr != null) sr.enabled = false; // Player hilang saat jatuh
+
+        // 3. Tunggu animasi jatuh selesai
+        yield return new WaitForSeconds(deathAnimationTime);
+        if (mobileControlsContainer != null) mobileControlsContainer.SetActive(false);
+        
+        // 4. Tampilkan Panel Cutscene
+        if (retryPanel != null)
+        {
+            if (cutsceneLivesText != null)
+            {
+                // Tampilkan sisa nyawa (bisa x 0 atau x 2)
+                cutsceneLivesText.text = "x " + currentLives.ToString();
+            }
+            retryPanel.SetActive(true);
+        }
+        if (mobileControlsContainer != null) mobileControlsContainer.SetActive(true);
+        // 5. Jeda untuk cutscene
+        yield return new WaitForSeconds(3f); 
+
+        // 6. Lakukan Pengecekan Akhir untuk Tentukan Scene yang Akan Dimuat
+        if (currentLives > 0)
+        {
+            // RETRY (Lives > 0): Keep Score & Lives, Reload Level Saat Ini
+            Debug.Log("Retry! Lives left: " + currentLives + ". Reloading current scene...");
+            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+            SceneManager.LoadScene(currentSceneIndex);
+        }
+        else
+        {
+            // GAME OVER FINAL (Lives = 0): Reset Data, Load Main Menu
+            Debug.Log("GAME OVER! Lives depleted. Loading Main Menu...");
+            
+            if (GameData.Instance != null)
+            {
+                GameData.Instance.ResetScore();
+                GameData.Instance.ResetLives();
+            }
+            
+            // Asumsi Main Menu adalah Scene Index 0
+            SceneManager.LoadScene(0);
+        }
+    }
+    
+    // ----------------------------------------------------------------------------------
+    // --- UTILITIES ---
+    // ----------------------------------------------------------------------------------
+
+    IEnumerator ExecuteDeathHop()
+    {
         Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        Collider2D col = GetComponent<Collider2D>();
+        
         if (rb != null)
         {
+            if (col != null) col.enabled = false;
+            
             rb.velocity = Vector2.zero;
             rb.constraints = RigidbodyConstraints2D.None;
             rb.AddForce(new Vector2(0, deathBounceForce), ForceMode2D.Impulse);
         }
-
-        // 3. Tunggu animasi jatuh selesai
-        yield return new WaitForSeconds(deathAnimationTime);
         
-        // 4. Reload Scene (Index 0 sudah dikonfirmasi)
-        Debug.Log("GAME OVER! Memuat ulang level 1...");
-        SceneManager.LoadScene(0); 
+        yield return null;
     }
 
-    // --- KEMATIAN NON-LETHAL (RESPAWN) ---
-    
-    // --- UTILITIES ---
-    
     IEnumerator InvincibilityCoroutine()
     {
         isInvincible = true;
@@ -92,15 +241,39 @@ public class PlayerHealth : MonoBehaviour
 
         while (timeElapsed < invincibilityDuration)
         {
-            sr.enabled = !sr.enabled;
+            if(sr != null) sr.enabled = !sr.enabled;
             yield return new WaitForSeconds(flashRate);
             timeElapsed += flashRate;
         }
         isInvincible = false;
         if (sr != null) sr.enabled = true;
-        Debug.Log("I-Frames SELESAI."); //
     }
 
+    public void UpdateScoreUI()
+    {
+        if (scoreText != null)
+        {
+            scoreText.text = GameData.Instance.currentScore.ToString("D6"); 
+        }
+    }
+    public void AddLife(int amount)
+{
+    // Cek agar nyawa tidak melebihi batas maksimum (misalnya 3)
+    if (GameData.Instance.currentLives < maxLives) 
+    {
+        GameData.Instance.currentLives += amount;
+    }
+    // Jika game Anda memperbolehkan nyawa lebih dari max, hapus if (currentLives < maxLives)
+
+    // Sinkronkan nilai lokal untuk UI & logika
+    currentLives = GameData.Instance.currentLives;
+    
+    // Update tampilan nyawa di HUD
+    UpdateLivesUI(); 
+    
+    // Opsional: Panggil efek visual/audio 1-Up di sini
+    Debug.Log("Player mendapat 1UP! Nyawa: " + currentLives);
+}
     public void UpdateLivesUI()
     {
         if (livesText != null)
@@ -108,16 +281,17 @@ public class PlayerHealth : MonoBehaviour
             livesText.text = "x " + currentLives.ToString();
         }
     }
-
+    
     private void DisableAllControls()
     {
         PlayerMovement movement = GetComponent<PlayerMovement>();
-        Collider2D col = GetComponent<Collider2D>();
-
+        Rigidbody2D rb = GetComponent<Rigidbody2D>();
+        
         if (movement != null) movement.enabled = false;
-        if (col != null) col.enabled = false;
+        if (rb != null) rb.velocity = Vector2.zero;
     }
 
+    // Fungsi ini tidak lagi dipanggil di jalur kematian baru, tetapi tetap ada untuk keperluan lain
     private void ResetControlsAndPhysics()
     {
         PlayerMovement movement = GetComponent<PlayerMovement>();
@@ -133,13 +307,9 @@ public class PlayerHealth : MonoBehaviour
             rb.constraints = RigidbodyConstraints2D.FreezeRotation; 
         }
     }
-    public void InitiateGameOver()
-{
-    // Pastikan status nyawa disetel ke nol (agar fungsi GameOverSequence tahu ini Game Over)
-    currentLives = 0;
-    UpdateLivesUI(); 
-    
-    // Panggil Coroutine yang menangani visual jatuh dan reload
-    StartCoroutine(GameOverAndReload()); 
-}
+
+    public void SetRespawnPoint(Vector3 newPoint)
+    {
+        respawnPoint = newPoint;
+    }
 }

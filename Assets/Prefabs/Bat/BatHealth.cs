@@ -8,10 +8,14 @@ public class BatHealth : MonoBehaviour
     public int playerDamage = 1; // Damage yang diberikan ke Player saat sentuhan pasif
     public float deathFallSpeed = 3f; // Kekuatan gravitasi saat jatuh
     public float flashDuration = 0.1f; 
-    
+    [Header("Attack Cooldown")]
+    public float hitCooldownDuration = 0.2f; // Cukup 0.2 detik (lebih cepat dari swing Player)
+    private bool canBeDamaged = true;
     [Header("Death Effects")]
     public float timeToFade = 1.5f; 
-    
+    [Header("Scoring")]
+    public int scoreValue = 100; // [BARU] Nilai skor yang diberikan saat musuh mati
+    public GameObject floatingTextPrefab;
     private Rigidbody2D rb;
     private SpriteRenderer sr;
     private Collider2D col;
@@ -31,16 +35,24 @@ public class BatHealth : MonoBehaviour
 
     // Fungsi dipanggil dari Player's Attack Hitbox
     public void TakeDamage(int damageAmount)
+{
+    // [PENTING] 1. Cek Cooldown
+    if (!canBeDamaged) return; 
+    if (health <= 0) return;
+
+    // 2. Mulai Cooldown segera
+    StartCoroutine(HitCooldownRoutine());
+
+    // 3. Lanjutkan Logika Damage
+    health -= damageAmount;
+    
+    StartCoroutine(FlashEffect()); // Tampilkan efek hit
+
+    if (health <= 0)
     {
-        health -= damageAmount;
-
-        StartCoroutine(FlashEffect());
-
-        if (health <= 0)
-        {
-            Die();
-        }
+        Die();
     }
+}
 
     // Fungsi dipanggil saat Bat menyentuh Player (Damage Pasif ke Player)
     void OnCollisionEnter2D(Collision2D collision)
@@ -59,7 +71,12 @@ public class BatHealth : MonoBehaviour
             }
         }
     }
-    
+    IEnumerator HitCooldownRoutine()
+{
+    canBeDamaged = false;
+    yield return new WaitForSeconds(hitCooldownDuration);
+    canBeDamaged = true;
+}
     IEnumerator FlashEffect()
     {
         Color originalColor = sr.color;
@@ -88,6 +105,28 @@ public class BatHealth : MonoBehaviour
 
     void Die()
     {
+        if (floatingTextPrefab != null)
+    {
+        // Instansiasi (spawn) text di posisi musuh yang mati
+        GameObject textInstance = Instantiate(
+            floatingTextPrefab, 
+            transform.position, 
+            Quaternion.identity);
+
+        // Ambil scriptnya dan set nilai teks
+        FloatingScoreText fs = textInstance.GetComponent<FloatingScoreText>();
+        if (fs != null)
+        {
+            fs.SetText(scoreValue);
+        }
+    }
+        PlayerHealth playerHealth = GameObject.FindObjectOfType<PlayerHealth>();
+
+    if (playerHealth != null)
+    {
+        playerHealth.PlayEnemyDeathSFX();
+        playerHealth.AddScore(scoreValue);
+    }
         // 1. Bekukan Animasi dan Kontrol
         if (anim != null) anim.enabled = false;
         if (patrolScript != null) patrolScript.enabled = false;

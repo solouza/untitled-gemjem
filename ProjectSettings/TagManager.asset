@@ -17,8 +17,8 @@ TagManager:
   - Player
   - Worm
   - PlayerHitbox
-  - 
-  - 
+  - Coin
+  - Spider
   - 
   - 
   - 
@@ -50,6 +50,9 @@ TagManager:
     locked: 0
   - name: Mobs
     uniqueID: 3541258281
+    locked: 0
+  - name: Environtment Details
+    uniqueID: 63700897
     locked: 0
   - name: Lava
     uniqueID: 538964205

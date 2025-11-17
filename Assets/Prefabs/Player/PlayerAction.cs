@@ -11,10 +11,12 @@ public class PlayerAction : MonoBehaviour
     // Hapus: private float timer = 0f;
     private PlayerMovement movement;
     private Animator animator;
+    private PlayerHealth playerHealth;
     public float attackWindupTime = 0.5f; // Durasi JEDA sebelum HITBOX aktif
 
 void Start() 
 {
+    playerHealth = GetComponent<PlayerHealth>();
     // Cek keamanan: Jika setup belum lengkap, berikan error dan keluar.
     if (transform.childCount < 2) 
     {
@@ -71,7 +73,10 @@ void Start()
 private void Attack()
 {
     attacking = true;
-    
+    if (playerHealth != null)
+    {
+        playerHealth.PlayAttackSFX(); // Panggil fungsi suara dari PlayerHealth
+    }
     // 1. [PERBAIKAN KRUSIAL] Reset status isJumping di Animator
     if (animator != null)
     {
@@ -121,5 +126,12 @@ private IEnumerator WaitForAttackToFinish()
     attacking = false;
     if (movement != null)
         movement.canMove = true;
+}
+public void MobileAttack()
+{
+    if (!attacking)
+    {
+        Attack(); // Panggil fungsi Attack() yang sudah ada
+    }
 }
 }

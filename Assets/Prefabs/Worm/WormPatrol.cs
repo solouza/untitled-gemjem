@@ -20,6 +20,11 @@ public class WormPatrol : MonoBehaviour
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         spriteRenderer = GetComponent<SpriteRenderer>();
+        if (rb != null)
+    {
+        rb.velocity = Vector2.zero;
+        rb.angularVelocity = 0f; // Penting untuk mencegah putaran
+    }
 
         // (Opsional) Tentukan arah pandang awal
         FlipVisual(movingRight);
