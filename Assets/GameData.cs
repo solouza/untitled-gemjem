@@ -89,4 +89,11 @@ public Vector3 lastCheckpointPosition; // [BARU] Posisi checkpoint terakhir yang
     {
         currentLives = maxLives;
     }
+    public void StopBGM()
+{
+    if (bgmSource != null && bgmSource.isPlaying)
+    {
+        bgmSource.Stop();
+    }
+}
 }

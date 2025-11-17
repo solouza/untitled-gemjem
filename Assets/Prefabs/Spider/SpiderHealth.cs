@@ -54,33 +54,49 @@ public class SpiderHealth : MonoBehaviour
 {
     if (!collision.gameObject.CompareTag("Player")) return;
 
-    PlayerMovement playerMovement = collision.gameObject.GetComponent<PlayerMovement>();
+    // Mendapatkan komponen Player yang diperlukan
     PlayerHealth playerHealth = collision.gameObject.GetComponent<PlayerHealth>();
     Rigidbody2D playerRb = collision.gameObject.GetComponent<Rigidbody2D>();
-    // Hapus: PlayerAction playerAction (tidak diperlukan lagi)
+    PlayerAction playerAction = collision.gameObject.GetComponent<PlayerAction>(); // Untuk anti-damage balasan
 
-    if (playerMovement == null || playerRb == null || playerHealth == null) return; 
+    if (playerRb == null || playerHealth == null) return; 
 
-    // --- LOGIKA UTAMA: STOMP VS SIDE HIT ---
+    bool hitFromAbove = false;
     
-    // Asumsi: Player.wasGrounded bernilai FALSE saat Player di udara
-    if (!playerMovement.wasGrounded)
+    // 1. CEK COLLISION NORMAL: Apakah benturan datang dari atas?
+    foreach (ContactPoint2D contact in collision.contacts)
     {
-        // KONDISI STOMP: Player di udara dan menabrak laba-laba
-        // (Ini adalah logika yang Anda inginkan: Bunuh Musuh)
+        // Normal Y > 0.7f berarti Player memukul permukaan atas Laba-laba
+        if (contact.normal.y > 0.7f) 
+        {
+            hitFromAbove = true;
+            break;
+        }
+    }
+    
+    // --- LOGIKA UTAMA ---
+
+    if (hitFromAbove)
+    {
+        // KONDISI STOMP: Player Menang (Hanya jika benturan dari atas)
         
-        // 1. Lakukan Player Bounce
+        // Lakukan Player Bounce
         playerRb.velocity = new Vector2(playerRb.velocity.x, playerBounceForce);
         
-        // 2. Laba-laba Mati
-        Die();
+        // Matikan Laba-laba
+        Die(); 
     }
     else
     {
-        // KONDISI SIDE HIT: Player berada di tanah (Player Terkena Damage pasif)
+        // KONDISI SIDE HIT/BOTTOM HIT: Player Kalah
         
-        // Panggil fungsi ambil damage pada Player
-        playerHealth.TakeDamage(); 
+        // Cek PlayerAction untuk mencegah damage balasan saat Player menyerang
+        if (playerAction != null && playerAction.attacking)
+        {
+            return; // Abaikan damage jika Player menyerang
+        }
+
+        playerHealth.TakeDamage(); // Player takes damage
     }
 }
     
