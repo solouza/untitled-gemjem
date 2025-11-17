@@ -140,4 +140,29 @@ public void MobileJump()
         }
     }
 }
+void OnCollisionEnter2D(Collision2D collision)
+{
+    BreakableTilemap breakableTilemap = collision.gameObject.GetComponent<BreakableTilemap>();
+    
+    if (breakableTilemap != null)
+    {
+        // Logika untuk mendeteksi benturan dari BAWAH (Headbutt)
+        foreach (ContactPoint2D contact in collision.contacts)
+        {
+            if (contact.normal.y < -0.7f) 
+            {
+                // 1. Stop momentum ke atas Player saat benturan
+                rb.velocity = new Vector2(rb.velocity.x, 0); 
+
+                // 2. [FIX KOORDINAT] Tambahkan offset kecil (0.01f) ke titik kontak
+                // Ini memaksa titik benturan keluar dari celah grid.
+                Vector3 hitWorldPosition = (Vector3)contact.point + new Vector3(0.01f, 0.01f, 0f); // <-- PERBAIKAN DI SINI
+
+                // 3. Trigger damage pada tilemap
+                breakableTilemap.HitTile(hitWorldPosition);
+                return; // Proses hanya sekali per benturan
+            }
+        }
+    }
+}
 }

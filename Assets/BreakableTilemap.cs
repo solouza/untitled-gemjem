@@ -6,14 +6,18 @@ public class BreakableTilemap : MonoBehaviour
 {
     // --- Configuration ---
     [Header("Settings")]
-    public int hitsToBreak = 3;   // Jumlah total pukulan yang dibutuhkan
+    public int hitsToBreak = 3;   
     
     [Header("Visuals")]
-    public Tile[] crackStages;    // Array Tile Retak (Indeks 0 = retak pertama)
+    public Tile[] crackStages;    
+    
+    [Header("Audio Settings")]
+    public AudioClip damageSound;   // Suara saat Tile Terkena Damage
+    public AudioClip destroySound;  // Suara saat Tile Hancur
+    public float volume = 0.5f;     // Volume untuk efek suara
 
     // --- Internal State ---
     private Tilemap tilemap;
-    // Dictionary untuk menyimpan health setiap tile (Key: posisi Cell, Value: sisa Health)
     private Dictionary<Vector3Int, int> tileHealths = new Dictionary<Vector3Int, int>();
 
     void Awake()
@@ -26,10 +30,10 @@ public class BreakableTilemap : MonoBehaviour
     }
 
     // [PUBLIC API] Fungsi ini dipanggil dari script AttackArea Player
-    // Ini adalah jembatan yang menerima sinyal dari pickaxe
     public void HitTile(Vector3 hitWorldPosition)
     {
-        // 1. Snapping Koordinat (Fix untuk Misalignment dan Empty Cell)
+        // 1. Snapping Koordinat (Fix untuk Misalignment)
+        // Dapatkan World Position yang tepat di PUSAT Cell terdekat
         Vector3Int cellPosition = SnapWorldToCenterCell(hitWorldPosition);
         
         // 2. Proses Hit (Health Tracking dan Visual Update)
@@ -42,7 +46,7 @@ public class BreakableTilemap : MonoBehaviour
         // Mendapatkan posisi cell mentah
         Vector3Int rawCellPosition = tilemap.WorldToCell(worldPos);
 
-        // Mendapatkan koordinat World Space yang tepat di PUSAT Cell tersebut (Final Fix)
+        // Mendapatkan koordinat World Space yang tepat di PUSAT Cell tersebut
         Vector3 cellCenterWorld = tilemap.GetCellCenterWorld(rawCellPosition);
 
         // Mengkonversi kembali ke Cell Position (dijamin akurat/stabil)
@@ -74,11 +78,26 @@ public class BreakableTilemap : MonoBehaviour
             // Tile Hancur:
             tilemap.SetTile(cellPosition, null); 
             tileHealths.Remove(cellPosition);
-            // Debug.Log("TILE HANCUR!");
+            
+            // [AUDIO] Putar Suara Hancur
+            Vector3 soundPosition = tilemap.GetCellCenterWorld(cellPosition);
+            if (destroySound != null)
+            {
+                AudioSource.PlayClipAtPoint(destroySound, soundPosition, volume);
+            }
         }
         else
         {
-            // Tile Retak
+            // Tile Terkena Damage (Belum Hancur)
+            
+            // [AUDIO] Putar Suara Damage
+            Vector3 soundPosition = tilemap.GetCellCenterWorld(cellPosition);
+            if (damageSound != null)
+            {
+                AudioSource.PlayClipAtPoint(damageSound, soundPosition, volume);
+            }
+            
+            // Tile Retak Visual
             int crackIndex = (hitsToBreak - 1) - currentHealth;
             
             if (crackStages != null && crackStages.Length > crackIndex)

@@ -12,6 +12,7 @@ public class PlayerHealth : MonoBehaviour
     [Header("Time Score")]
     public float scoreInterval = 0.2f; // Tambah skor setiap 1 detik
     public int scorePerInterval = 1;  // Nilai skor yang ditambahkan (misalnya 5)
+    
     [Header("SFX")]
     public AudioClip coinCollectSFX; // Slot untuk file suara koin
     private AudioSource sfxSource;
@@ -41,10 +42,7 @@ public class PlayerHealth : MonoBehaviour
     public GameObject retryPanel; // Panel cutscene (diaktifkan saat respawn/game over)
     public TextMeshProUGUI cutsceneLivesText; // Teks nyawa di cutscene
     
-    [Header("Respawn")]
-    public Vector3 respawnPoint; // Tetap ada untuk checkpoint system
-
-    // --- INTERNAL STATE ---
+    
     private bool isInvincible = false;
     private SpriteRenderer sr; 
     private bool isDead = false; // Flag untuk mencegah double death
@@ -55,13 +53,18 @@ public class PlayerHealth : MonoBehaviour
     {
         currentLives = GameData.Instance.currentLives;
     }
+    if (GameData.Instance != null && GameData.Instance.lastCheckpointPosition != Vector3.zero)
+    {
+        // Jika ada data checkpoint, gunakan itu untuk posisi awal player
+        transform.position = GameData.Instance.lastCheckpointPosition;
+    }
     else
     {
         // Jika GameData TIDAK ditemukan (saat testing di Editor), set nilai default
         currentLives = maxLives; 
     }
         currentLives = GameData.Instance.currentLives;
-        respawnPoint = transform.position;
+        GameData.Instance.lastCheckpointPosition = transform.position;
         sr = GetComponent<SpriteRenderer>();
         
         sfxSource = GetComponent<AudioSource>();
@@ -159,59 +162,73 @@ public void PlayAttackSFX()
     // ----------------------------------------------------------------------------------
 
     IEnumerator DeathSequenceAndReload()
+{
+    isDead = true; 
+    PlayPlayerDeathSFX();
+    
+    // 1. Mulai efek BLINKING (Visual Feedback)
+    StartCoroutine(InvincibilityCoroutine()); 
+    
+    // 2. Efek Hop & Jatuh
+    DisableAllControls();
+    StartCoroutine(ExecuteDeathHop());
+    if (sr != null) sr.enabled = false; 
+
+    // 3. Sembunyikan Kontrol Mobile segera setelah jatuh dimulai
+    if (mobileControlsContainer != null) mobileControlsContainer.SetActive(false);
+    
+    // Tunggu animasi jatuh selesai
+    yield return new WaitForSeconds(deathAnimationTime);
+    
+    // 4. Tampilkan Panel Cutscene
+    if (retryPanel != null)
     {
-        isDead = true; // Kunci Player agar tidak bisa mati lagi
-        PlayPlayerDeathSFX();
-        
-        // 1. Mulai efek BLINKING (Visual Feedback)
-        StartCoroutine(InvincibilityCoroutine()); 
-        
-        // 2. Efek Hop & Jatuh
-        DisableAllControls();
-        StartCoroutine(ExecuteDeathHop());
-        if (sr != null) sr.enabled = false; // Player hilang saat jatuh
-
-        // 3. Tunggu animasi jatuh selesai
-        yield return new WaitForSeconds(deathAnimationTime);
-        if (mobileControlsContainer != null) mobileControlsContainer.SetActive(false);
-        
-        // 4. Tampilkan Panel Cutscene
-        if (retryPanel != null)
+        if (cutsceneLivesText != null)
         {
-            if (cutsceneLivesText != null)
-            {
-                // Tampilkan sisa nyawa (bisa x 0 atau x 2)
-                cutsceneLivesText.text = "x " + currentLives.ToString();
-            }
-            retryPanel.SetActive(true);
+            cutsceneLivesText.text = "x " + currentLives.ToString();
         }
-        if (mobileControlsContainer != null) mobileControlsContainer.SetActive(true);
-        // 5. Jeda untuk cutscene
-        yield return new WaitForSeconds(3f); 
-
-        // 6. Lakukan Pengecekan Akhir untuk Tentukan Scene yang Akan Dimuat
-        if (currentLives > 0)
-        {
-            // RETRY (Lives > 0): Keep Score & Lives, Reload Level Saat Ini
-            Debug.Log("Retry! Lives left: " + currentLives + ". Reloading current scene...");
-            int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-            SceneManager.LoadScene(currentSceneIndex);
-        }
-        else
-        {
-            // GAME OVER FINAL (Lives = 0): Reset Data, Load Main Menu
-            Debug.Log("GAME OVER! Lives depleted. Loading Main Menu...");
-            
-            if (GameData.Instance != null)
-            {
-                GameData.Instance.ResetScore();
-                GameData.Instance.ResetLives();
-            }
-            
-            // Asumsi Main Menu adalah Scene Index 0
-            SceneManager.LoadScene(0);
-        }
+        retryPanel.SetActive(true);
     }
+    
+    // HAPUS PANGGILAN mobileControlsContainer.SetActive(true) YANG SALAH TEMPAT DI SINI
+
+    // 5. Jeda untuk cutscene (3 detik)
+    yield return new WaitForSeconds(3f); 
+
+    // 6. Lakukan Pengecekan Akhir untuk Tentukan Scene yang Akan Dimuat
+    if (currentLives > 0)
+    {
+        // --- JALUR RESPAWN ---
+        
+        // Sembunyikan Panel Cutscene
+        if (retryPanel != null) { retryPanel.SetActive(false); }
+
+        // [FIX] Aktifkan kembali Mobile Controls sebelum melanjutkan permainan
+        if (mobileControlsContainer != null) mobileControlsContainer.SetActive(true); 
+
+        // Reset Player State
+        transform.position = GameData.Instance.lastCheckpointPosition;
+        if (sr != null) sr.enabled = true;
+        ResetControlsAndPhysics();
+
+        Debug.Log("Retry! Lives left: " + currentLives + ". Reloading current scene...");
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        SceneManager.LoadScene(currentSceneIndex);
+    }
+    else
+    {
+        // --- JALUR GAME OVER FINAL (Reload Main Menu) ---
+        // Kita tidak perlu mengaktifkan kontrol karena scene akan segera reload
+        
+        if (GameData.Instance != null)
+        {
+            GameData.Instance.ResetScore();
+            GameData.Instance.ResetLives();
+        }
+        
+        SceneManager.LoadScene(0); // Load Main Menu
+    }
+}
     
     // ----------------------------------------------------------------------------------
     // --- UTILITIES ---
@@ -308,8 +325,13 @@ public void PlayAttackSFX()
         }
     }
 
-    public void SetRespawnPoint(Vector3 newPoint)
+    public void SetRespawnPoint(Vector3 newPosition) 
+{
+    // [FIX] Tulis posisi checkpoint langsung ke GameData
+    if (GameData.Instance != null)
     {
-        respawnPoint = newPoint;
+        GameData.Instance.lastCheckpointPosition = newPosition;
+        Debug.Log("Checkpoint Tersimpan di: " + newPosition);
     }
+}
 }

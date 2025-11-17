@@ -10,7 +10,8 @@ public class GameData : MonoBehaviour
     public AudioClip menuBGM;    // [BARU] Musik untuk Main Menu
     public AudioClip level1BGM;  // [BARU] Musik untuk Level 1
     private AudioSource bgmSource; // [BARU] Sumber Audio
-    
+    [Header("Checkpoint Data")]
+public Vector3 lastCheckpointPosition; // [BARU] Posisi checkpoint terakhir yang tersimpan
     // Variable nyawa yang akan bertahan saat scene di-reload.
     public int currentLives = 3;
     public int maxLives = 3; 
@@ -30,6 +31,7 @@ public class GameData : MonoBehaviour
             }
             bgmSource.loop = true; // Musik latar harus loop
             if (bgmSource != null && !bgmSource.isPlaying)
+            lastCheckpointPosition = Vector3.zero; // Setel ke (0,0,0) atau posisi awal yang aman
     {
         // Panggil BGM untuk Scene yang sedang aktif
         PlayBGM(UnityEngine.SceneManagement.SceneManager.GetActiveScene().name);
